@@ -1,16 +1,12 @@
 import java.util.Scanner;
 
-public class Controller
-{
+public class Controller {
     static Scanner sn = new Scanner(System.in);
 
-    private static boolean getYesOrNoInput()
-    {
-        while (true)
-        {
+    private static boolean getYesOrNoInput() {
+        while (true) {
             String input = sn.nextLine();
-            switch (input)
-            {
+            switch (input) {
                 case "y":
                     return true;
                 case "n":
@@ -21,40 +17,28 @@ public class Controller
         }
     }
 
-    static void dialogLoop(Model model)
-    {
+    static void dialogLoop(Model model) {
         View.sayHello(model.minValue, model.maxValue);
         boolean isGameOver = false;
-        while (!isGameOver)
-        {
+        while (!isGameOver) {
             int guess = model.nextGuess();
             View.makeAGuess(guess);
-            if (getYesOrNoInput())
-            {
+            if (getYesOrNoInput()) {
                 View.winText(model.getAttempts());
                 View.promptANewGame();
-                if (getYesOrNoInput())
-                {
+                if (getYesOrNoInput()) {
                     model.reset();
-                }
-                else
-                {
+                } else {
                     isGameOver = true;
                 }
-            }
-            else
-            {
+            } else {
                 View.askForBound(guess);
-                if (!model.update(guess, getYesOrNoInput()))
-                {
+                if (!model.update(guess, getYesOrNoInput())) {
                     View.errorNumberNotFound(model.minValue, model.maxValue);
                     View.promptANewGame();
-                    if (getYesOrNoInput())
-                    {
+                    if (getYesOrNoInput()) {
                         model.reset();
-                    }
-                    else
-                    {
+                    } else {
                         isGameOver = true;
                     }
                 }
