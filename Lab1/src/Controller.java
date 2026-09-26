@@ -1,16 +1,22 @@
 import java.util.Scanner;
 
-public class Controller
-{
+/**
+ * Читает ввод пользователя и управляет ходом игры.
+ */
+public class Controller {
+    private Controller() {}
+
     static Scanner sn = new Scanner(System.in);
 
-    private static boolean getYesOrNoInput()
-    {
-        while (true)
-        {
+    /**
+     * Считывает ответ пользователя до тех пор, пока не будет введено y или n.
+     *
+     * @return true, если введено y; false, если введено n
+     */
+    private static boolean getYesOrNoInput() {
+        while (true) {
             String input = sn.nextLine();
-            switch (input)
-            {
+            switch (input) {
                 case "y":
                     return true;
                 case "n":
@@ -21,40 +27,33 @@ public class Controller
         }
     }
 
-    static void dialogLoop(Model model)
-    {
+    /**
+     * Запускает игровой цикл: задаёт вопросы, обновляет модель, предлагает сыграть снова.
+     *
+     * @param model модель с начальным диапазоном
+     */
+    static void dialogLoop(Model model) {
         View.sayHello(model.minValue, model.maxValue);
         boolean isGameOver = false;
-        while (!isGameOver)
-        {
+        while (!isGameOver) {
             int guess = model.nextGuess();
             View.makeAGuess(guess);
-            if (getYesOrNoInput())
-            {
+            if (getYesOrNoInput()) {
                 View.winText(model.getAttempts());
                 View.promptANewGame();
-                if (getYesOrNoInput())
-                {
+                if (getYesOrNoInput()) {
                     model.reset();
-                }
-                else
-                {
+                } else {
                     isGameOver = true;
                 }
-            }
-            else
-            {
+            } else {
                 View.askForBound(guess);
-                if (!model.update(guess, getYesOrNoInput()))
-                {
+                if (!model.update(guess, getYesOrNoInput())) {
                     View.errorNumberNotFound(model.minValue, model.maxValue);
                     View.promptANewGame();
-                    if (getYesOrNoInput())
-                    {
+                    if (getYesOrNoInput()) {
                         model.reset();
-                    }
-                    else
-                    {
+                    } else {
                         isGameOver = true;
                     }
                 }
