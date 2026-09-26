@@ -1,8 +1,18 @@
 import java.util.Scanner;
 
+/**
+ * Читает ввод пользователя и управляет ходом игры.
+ */
 public class Controller {
+    private Controller() {}
+
     static Scanner sn = new Scanner(System.in);
 
+    /**
+     * Считывает ответ пользователя до тех пор, пока не будет введено y или n.
+     *
+     * @return true, если введено y; false, если введено n
+     */
     private static boolean getYesOrNoInput() {
         while (true) {
             String input = sn.nextLine();
@@ -17,6 +27,11 @@ public class Controller {
         }
     }
 
+    /**
+     * Запускает игровой цикл: задаёт вопросы, обновляет модель, предлагает сыграть снова.
+     *
+     * @param model модель с начальным диапазоном
+     */
     static void dialogLoop(Model model) {
         View.sayHello(model.minValue, model.maxValue);
         boolean isGameOver = false;
