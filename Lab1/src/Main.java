@@ -8,7 +8,7 @@ public class Main {
      * @param args два целых числа — нижняя и верхняя границы диапазона.
      *             Если аргументы не переданы, используется диапазон 1–100.
      */
-    void main(String[] args) {
+    public static void main(String[] args) {
         int minValue;
         int maxValue;
         if (args.length == 0) {
