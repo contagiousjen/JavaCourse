@@ -48,4 +48,15 @@ public class Professor extends Person {
         student.addGrade(new Grade(value, date, student, discipline, this));
         return true;
     }
+
+    @Override
+    public String toString() {
+        StringBuilder names = new StringBuilder();
+        for (int i = 0; i < disciplines.size(); i++) {
+            if (i > 0) names.append(", ");
+            names.append(disciplines.get(i).getName());
+        }
+        String subjects = disciplines.isEmpty() ? "—" : names.toString();
+        return String.format("Преподаватель: %s, предмет: %s", super.toString(), subjects);
+    }
 }

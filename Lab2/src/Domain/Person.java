@@ -2,6 +2,7 @@ package Domain;
 
 import Domain.Enums.Sex;
 
+import java.util.Calendar;
 import java.util.Date;
 
 public abstract class Person
@@ -29,4 +30,23 @@ public abstract class Person
     public String getFirstName() { return firstName; }
     public String getLastName() { return lastName; }
     public String getFullName() { return firstName + " " + middleName + " " + lastName; }
+    public Sex getSex() { return sex; }
+
+    public int getAge() {
+        Calendar birth = Calendar.getInstance();
+        birth.setTime(birthDate);
+        Calendar now = Calendar.getInstance();
+        int age = now.get(Calendar.YEAR) - birth.get(Calendar.YEAR);
+        if (now.get(Calendar.DAY_OF_YEAR) < birth.get(Calendar.DAY_OF_YEAR)) age--;
+        return age;
+    }
+
+    protected String sexLabel() {
+        return sex == Sex.MALE ? "мужской" : "женский";
+    }
+
+    @Override
+    public String toString() {
+        return String.format("%s, %d лет, пол: %s", getFullName(), getAge(), sexLabel());
+    }
 }

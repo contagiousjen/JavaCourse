@@ -137,6 +137,16 @@ public class Main {
         }
         System.out.println();
 
+        // Описания через toString
+        System.out.println("=== Описания (toString) ===\n");
+        System.out.println("-- Преподаватели --");
+        for (Professor p : professors) System.out.println(p);
+        System.out.println("\n-- Студенты --");
+        for (Student s : students) System.out.println(s);
+        System.out.println("\n-- Родители --");
+        for (Parent p : parents) System.out.println(p);
+        System.out.println();
+
         // Демонстрация ограничений
         System.out.println("=== Демонстрация ограничений ===\n");
 

@@ -37,4 +37,14 @@ public class Student extends Person {
         for (Grade g : grades) sum += g.getValue();
         return sum / grades.size();
     }
+
+    public int getPremium() {
+        return parent == null ? 0 : parent.getPremium();
+    }
+
+    @Override
+    public String toString() {
+        return String.format("Студент: %s, средний балл: %.2f, премия: %d руб.",
+                super.toString(), getAverageGrade(), getPremium());
+    }
 }

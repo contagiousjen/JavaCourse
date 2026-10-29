@@ -54,4 +54,18 @@ public class Parent extends Person
             premium = 0;
         }
     }
+
+    @Override
+    public String toString() {
+        StringBuilder names = new StringBuilder();
+        if (students != null) {
+            for (int i = 0; i < students.length; i++) {
+                if (i > 0) names.append(", ");
+                names.append(students[i].getFullName());
+            }
+        }
+        String children = names.length() == 0 ? "—" : names.toString();
+        return String.format("Родитель: %s, дети: %s, выплачено премиальных: %d руб.",
+                super.toString(), children, premium);
+    }
 }
