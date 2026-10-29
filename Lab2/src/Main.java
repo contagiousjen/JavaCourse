@@ -1,6 +1,8 @@
 import Domain.Discipline;
+import Domain.Enums.ParentStatus;
 import Domain.Enums.Sex;
 import Domain.Grade;
+import Domain.Parent;
 import Domain.Professor;
 import Domain.Student;
 
@@ -49,20 +51,51 @@ public class Main {
             new Student("Валерия",   "Сергеевна",  "Захарова",  date(2003, 3, 19), Sex.FEMALE)
         };
 
-        // Каждый преподаватель выставляет по 10 оценок каждому студенту с шагом в 7 дней
-        int[] gradeValues = {5, 4, 5, 3, 4, 5, 4, 3, 5, 4};
+        // По одному родителю на студента
+        Parent[] parents = {
+            new Parent("Виктор",   "Иванович",   "Петров",    date(1975, 6, 1),  Sex.MALE,   new Student[]{students[0]}),
+            new Parent("Светлана", "Юрьевна",    "Сидорова",  date(1976, 2, 10), Sex.FEMALE, new Student[]{students[1]}),
+            new Parent("Олег",     "Петрович",   "Федоров",   date(1974, 10, 20),Sex.MALE,   new Student[]{students[2]}),
+            new Parent("Андрей",   "Викторович", "Морозов",   date(1977, 4, 5),  Sex.MALE,   new Student[]{students[3]}),
+            new Parent("Павел",    "Сергеевич",  "Волков",    date(1973, 8, 14), Sex.MALE,   new Student[]{students[4]}),
+            new Parent("Юрий",     "Петрович",   "Лебедев",   date(1978, 12, 3), Sex.MALE,   new Student[]{students[5]}),
+            new Parent("Роман",    "Ильич",      "Соколов",   date(1972, 7, 8),  Sex.MALE,   new Student[]{students[6]}),
+            new Parent("Игорь",    "Валерьевич", "Козлов",    date(1975, 5, 25), Sex.MALE,   new Student[]{students[7]}),
+            new Parent("Максим",   "Павлович",   "Попов",     date(1974, 1, 30), Sex.MALE,   new Student[]{students[8]}),
+            new Parent("Сергей",   "Викторович", "Захаров",   date(1976, 11, 11),Sex.MALE,   new Student[]{students[9]})
+        };
+        for (int i = 0; i < students.length; i++) {
+            students[i].setParent(parents[i]);
+        }
+
+        // Шаблоны оценок, чтобы получить разные средние и увидеть все три статуса
+        int[][] gradePatterns = {
+            {5, 5, 5, 5, 5, 5, 5, 5, 5, 5}, // средний 5.0 → радостный
+            {5, 5, 4, 5, 5, 5, 5, 4, 5, 5}, // средний 4.8 → радостный
+            {5, 4, 5, 4, 5, 4, 5, 4, 5, 4}, // средний 4.5 → удовлетворённый
+            {4, 4, 4, 4, 4, 4, 4, 4, 4, 4}, // средний 4.0 → удовлетворённый
+            {4, 4, 5, 4, 4, 4, 4, 4, 4, 4}, // средний 4.1 → удовлетворённый
+            {3, 4, 3, 4, 3, 4, 3, 4, 3, 4}, // средний 3.5 → хмурый
+            {3, 3, 4, 3, 3, 3, 3, 4, 3, 3}, // средний 3.2 → хмурый
+            {3, 3, 3, 3, 3, 3, 3, 3, 3, 3}, // средний 3.0 → хмурый
+            {5, 4, 4, 5, 5, 4, 5, 4, 5, 4}, // средний 4.5 → удовлетворённый
+            {5, 5, 5, 4, 5, 5, 5, 4, 5, 5}  // средний 4.8 → радостный
+        };
 
         System.out.println("=== Выставление оценок ===\n");
 
         for (Professor prof : professors) {
             Discipline disc = prof.getDisciplines().get(0);
-            for (Student student : students) {
+            for (int si = 0; si < students.length; si++) {
+                Student student = students[si];
+                int[] values = gradePatterns[si];
+
                 Calendar cal = Calendar.getInstance();
                 cal.set(2024, Calendar.SEPTEMBER, 2);
 
                 for (int week = 0; week < 10; week++) {
                     Date gradeDate = cal.getTime();
-                    boolean success = prof.gradeStudent(student, disc, gradeValues[week], gradeDate);
+                    boolean success = prof.gradeStudent(student, disc, values[week], gradeDate);
                     if (!success) {
                         System.out.printf("ОШИБКА: %s не смог выставить оценку %s по %s%n",
                             prof.getFullName(), student.getLastName(), disc.getName());
@@ -86,6 +119,23 @@ public class Main {
             }
             System.out.println();
         }
+
+        // Статусы родителей и премии
+        System.out.println("=== Статусы родителей и премии ===\n");
+        for (Parent parent : parents) {
+            parent.updateStatusAndPremium();
+        }
+        for (Student student : students) {
+            Parent parent = student.getParent();
+            double avg = student.getAverageGrade();
+            System.out.printf("Студент: %-35s средний балл: %.2f | родитель: %s | статус: %-15s | премия: %d руб.%n",
+                student.getFullName(),
+                avg,
+                parent.getFullName(),
+                statusLabel(parent.getStatus()),
+                parent.getPremium());
+        }
+        System.out.println();
 
         // Демонстрация ограничений
         System.out.println("=== Демонстрация ограничений ===\n");
@@ -112,6 +162,16 @@ public class Main {
         result = prof0.gradeStudent(student0, disciplines[1], 5, cal11.getTime());
         System.out.printf("Попытка выставить оценку по чужой дисциплине: %s%n",
             result ? "УСПЕХ (неожиданно)" : "ОТКЛОНЕНО (ожидаемо — чужая дисциплина)");
+    }
+
+    private static String statusLabel(ParentStatus status) {
+        if (status == null) return "—";
+        switch (status) {
+            case Angry:   return "хмурый";
+            case Pleased: return "удовлетворённый";
+            case Happy:   return "радостный";
+            default:      return status.name();
+        }
     }
 
     private static Date date(int year, int month, int day) {
