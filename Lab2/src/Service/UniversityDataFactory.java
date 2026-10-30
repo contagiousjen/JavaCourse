@@ -2,8 +2,6 @@ package Service;
 
 import Domain.Discipline;
 import Domain.Enums.PerformanceCategory;
-import Domain.Enums.Sex;
-import Domain.Grade;
 import Domain.Institute;
 import Domain.Parent;
 import Domain.Professor;
@@ -42,6 +40,7 @@ public class UniversityDataFactory {
     };
 
     private final Random random = new Random(42);
+    private final NamePool names = new NamePool(random);
 
     public static class UniversityData {
         public final List<Institute> institutes;
@@ -85,28 +84,14 @@ public class UniversityDataFactory {
 
     private List<Professor> createProfessors(List<Institute> institutes) {
         List<Professor> list = new ArrayList<>();
-        String[][] names = {
-                {"Алексей", "Иванович", "Смирнов"}, {"Мария", "Петровна", "Козлова"},
-                {"Игорь", "Сергеевич", "Новиков"}, {"Елена", "Дмитриевна", "Орлова"},
-                {"Андрей", "Николаевич", "Волков"}, {"Наталья", "Олеговна", "Белова"},
-                {"Пётр", "Андреевич", "Громов"}, {"Светлана", "Викторовна", "Романова"},
-                {"Дмитрий", "Павлович", "Кузнецов"}, {"Ольга", "Игоревна", "Медведева"},
-                {"Виктор", "Сергеевич", "Тихонов"}, {"Юлия", "Александровна", "Фёдорова"},
-                {"Константин", "Романович", "Зайцев"}, {"Татьяна", "Михайловна", "Семёнова"},
-                {"Глеб", "Артёмович", "Егоров"}
-        };
-        Sex[] sexes = {
-                Sex.MALE, Sex.FEMALE, Sex.MALE, Sex.FEMALE, Sex.MALE,
-                Sex.FEMALE, Sex.MALE, Sex.FEMALE, Sex.MALE, Sex.FEMALE,
-                Sex.MALE, Sex.FEMALE, Sex.MALE, Sex.FEMALE, Sex.MALE
-        };
         int idx = 0;
         for (Institute institute : institutes) {
             for (int i = 0; i < PROFESSORS_PER_INSTITUTE; i++) {
+                NamePool.PersonName name = names.randomPerson(names.randomSex());
                 Professor p = new Professor(
-                        names[idx][0], names[idx][1], names[idx][2],
+                        name.firstName, name.middleName, name.lastName,
                         date(1968 + idx, 3 + (idx % 9), 5 + (idx % 20)),
-                        sexes[idx],
+                        name.sex,
                         institute);
                 institute.registerProfessor(p);
                 list.add(p);
@@ -141,25 +126,26 @@ public class UniversityDataFactory {
                 StudyGroup studyGroup = new StudyGroup(course, group);
                 PerformanceCategory[] tiers = tierPlanForGroup();
                 for (int i = 0; i < STUDENTS_PER_GROUP; i++) {
-                    Sex sex = (serial % 2 == 0) ? Sex.FEMALE : Sex.MALE;
-                    String lastName = "Студентов" + serial;
+                    int surnameIndex = names.randomSurnameIndex();
+                    NamePool.PersonName studentName = names.randomPersonWithSurname(names.randomSex(), surnameIndex);
                     Student student = new Student(
-                            "Имя" + serial,
-                            "Отчество" + serial,
-                            lastName,
+                            studentName.firstName,
+                            studentName.middleName,
+                            studentName.lastName,
                             date(2000 + (6 - course), 1 + (serial % 12), 1 + (serial % 25)),
-                            sex,
+                            studentName.sex,
                             course,
                             studyGroup);
                     student.setPerformanceTier(tiers[i]);
                     students.add(student);
 
+                    NamePool.PersonName parentName = names.randomPersonWithSurname(names.randomSex(), surnameIndex);
                     Parent parent = new Parent(
-                            "Родитель" + serial,
-                            "Отчество" + serial,
-                            lastName,
+                            parentName.firstName,
+                            parentName.middleName,
+                            parentName.lastName,
                             date(1975 + (serial % 10), 5, 10),
-                            sex == Sex.MALE ? Sex.FEMALE : Sex.MALE,
+                            parentName.sex,
                             new Student[]{student});
                     student.setParent(parent);
                     parents.add(parent);
