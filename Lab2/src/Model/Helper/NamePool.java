@@ -1,6 +1,6 @@
-package Service;
+package Model.Helper;
 
-import Domain.Enums.Sex;
+import Model.Enums.Sex;
 
 import java.util.Random;
 

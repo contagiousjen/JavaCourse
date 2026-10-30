@@ -1,7 +1,7 @@
-package Domain;
+package Model;
 
-import Domain.Enums.ParentStatus;
-import Domain.Enums.Sex;
+import Model.Enums.ParentStatus;
+import Model.Enums.Sex;
 
 import java.util.Date;
 
@@ -40,7 +40,7 @@ public class Parent extends Person
         for (Student s : students) avg += s.getAverageGrade();
         avg /= students.length;
 
-        if (avg >= 3.0 && avg < 4.0) {
+        if (avg < 4.0) {
             status = ParentStatus.Angry;
             premium = 0;
         } else if (avg >= 4.0 && avg <= 4.5) {
@@ -64,7 +64,7 @@ public class Parent extends Person
                 names.append(students[i].getFullName());
             }
         }
-        String children = names.length() == 0 ? "—" : names.toString();
+        String children = names.isEmpty() ? "—" : names.toString();
         return String.format("Родитель: %s, дети: %s, выплачено премиальных: %d руб.",
                 super.toString(), children, premium);
     }

@@ -1,12 +1,12 @@
-package Service;
+package Model.Helper;
 
-import Domain.Discipline;
-import Domain.Enums.PerformanceCategory;
-import Domain.Institute;
-import Domain.Parent;
-import Domain.Professor;
-import Domain.Student;
-import Domain.StudyGroup;
+import Model.Discipline;
+import Model.Enums.PerformanceCategory;
+import Model.Institute;
+import Model.Parent;
+import Model.Professor;
+import Model.Student;
+import Model.StudyGroup;
 
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -15,7 +15,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.Random;
 
-public class UniversityDataFactory {
+public class UniversityDataHelper {
     public static final int COURSES = 6;
     public static final int GROUPS_PER_COURSE = 3;
     public static final int STUDENTS_PER_GROUP = 10;
@@ -157,25 +157,12 @@ public class UniversityDataFactory {
 
     private PerformanceCategory[] tierPlanForGroup() {
         int excellent = randomRange(1, 2);
-        int failing = randomRange(0, 1);
+        int failing = 1;
         int good = randomRange(2, 4);
         int satisfactory = STUDENTS_PER_GROUP - excellent - failing - good;
-        while (satisfactory < 2 || satisfactory > 4) {
-            if (satisfactory < 2 && good > 2) {
-                good--;
-                satisfactory++;
-            } else if (satisfactory > 4 && good < 4) {
-                good++;
-                satisfactory--;
-            } else if (satisfactory < 2 && excellent > 1) {
-                excellent--;
-                satisfactory++;
-            } else if (satisfactory > 4 && failing < 1) {
-                failing++;
-                satisfactory--;
-            } else {
-                break;
-            }
+        while (satisfactory > 4) {
+            good++;
+            satisfactory--;
         }
         List<PerformanceCategory> tiers = new ArrayList<>();
         addTier(tiers, PerformanceCategory.EXCELLENT, excellent);

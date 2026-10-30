@@ -1,6 +1,6 @@
-package Domain;
+package Model;
 
-import Domain.Enums.Sex;
+import Model.Enums.Sex;
 
 import java.util.ArrayList;
 import java.util.Collections;

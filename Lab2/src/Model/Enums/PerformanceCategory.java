@@ -1,4 +1,4 @@
-package Domain.Enums;
+package Model.Enums;
 
 public enum PerformanceCategory {
     EXCELLENT("отличник"),

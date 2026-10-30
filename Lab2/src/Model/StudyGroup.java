@@ -1,4 +1,4 @@
-package Domain;
+package Model;
 
 public class StudyGroup {
     private final int courseYear;

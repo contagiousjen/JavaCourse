@@ -1,6 +1,6 @@
-package Domain;
+package Model;
 
-import Domain.Enums.Sex;
+import Model.Enums.Sex;
 
 import java.util.Calendar;
 import java.util.Date;
@@ -29,7 +29,7 @@ public abstract class Person
 
     public String getFirstName() { return firstName; }
     public String getLastName() { return lastName; }
-    public String getFullName() { return firstName + " " + middleName + " " + lastName; }
+    public String getFullName() { return lastName + " " + firstName + " " + middleName; }
     public Sex getSex() { return sex; }
 
     public int getAge() {
