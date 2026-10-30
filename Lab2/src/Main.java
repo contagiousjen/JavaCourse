@@ -1,177 +1,172 @@
 import Domain.Discipline;
 import Domain.Enums.ParentStatus;
-import Domain.Enums.Sex;
 import Domain.Grade;
+import Domain.Institute;
 import Domain.Parent;
 import Domain.Professor;
 import Domain.Student;
+import Service.PerformanceReportService;
+import Service.UniversityDataFactory;
 
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.List;
 
 public class Main {
     private Main() {}
 
     public static void main(String[] args) {
         SimpleDateFormat sdf = new SimpleDateFormat("dd.MM.yyyy");
+        PerformanceReportService reportService = new PerformanceReportService();
 
-        // 5 преподавателей, каждый ведёт одну дисциплину
-        Professor[] professors = {
-            new Professor("Алексей",  "Иванович",   "Смирнов",   date(1975, 3, 12), Sex.MALE),
-            new Professor("Мария",    "Петровна",   "Козлова",   date(1980, 7, 25), Sex.FEMALE),
-            new Professor("Игорь",    "Сергеевич",  "Новиков",   date(1970, 11, 5), Sex.MALE),
-            new Professor("Елена",    "Дмитриевна", "Орлова",    date(1985, 1, 18), Sex.FEMALE),
-            new Professor("Андрей",   "Николаевич", "Волков",    date(1978, 9, 30), Sex.MALE)
-        };
+        UniversityDataFactory factory = new UniversityDataFactory();
+        UniversityDataFactory.UniversityData data = factory.create();
 
-        Discipline[] disciplines = {
-            new Discipline("Математика",        4),
-            new Discipline("Физика",            3),
-            new Discipline("Информатика",       5),
-            new Discipline("История",           2),
-            new Discipline("Английский язык",   3)
-        };
+        System.out.printf(
+                "Создано: студентов %d, преподавателей %d, дисциплин %d, институтов %d%n%n",
+                data.students.size(),
+                data.professors.size(),
+                data.disciplines.size(),
+                data.institutes.size());
 
-        for (int i = 0; i < professors.length; i++) {
-            professors[i].addDiscipline(disciplines[i]);
-        }
+        printGroupDistribution(data.students);
+        printDisciplineDistribution(data.disciplines);
 
-        // 10 студентов
-        Student[] students = {
-            new Student("Дмитрий",   "Алексеевич", "Петров",    date(2003, 2, 14), Sex.MALE),
-            new Student("Анна",      "Викторовна", "Сидорова",  date(2003, 5, 22), Sex.FEMALE),
-            new Student("Михаил",    "Олегович",   "Федоров",   date(2002, 8, 3),  Sex.MALE),
-            new Student("Ольга",     "Андреевна",  "Морозова",  date(2003, 11, 17),Sex.FEMALE),
-            new Student("Сергей",    "Павлович",   "Волков",    date(2002, 4, 9),  Sex.MALE),
-            new Student("Татьяна",   "Юрьевна",    "Лебедева",  date(2003, 1, 28), Sex.FEMALE),
-            new Student("Илья",      "Романович",  "Соколов",   date(2002, 6, 15), Sex.MALE),
-            new Student("Наталья",   "Игоревна",   "Козлова",   date(2003, 9, 11), Sex.FEMALE),
-            new Student("Павел",     "Максимович", "Попов",     date(2002, 12, 7), Sex.MALE),
-            new Student("Валерия",   "Сергеевна",  "Захарова",  date(2003, 3, 19), Sex.FEMALE)
-        };
+        System.out.println("=== Примеры отчётов по успеваемости ===\n");
 
-        // По одному родителю на студента
-        Parent[] parents = {
-            new Parent("Виктор",   "Иванович",   "Петров",    date(1975, 6, 1),  Sex.MALE,   new Student[]{students[0]}),
-            new Parent("Светлана", "Юрьевна",    "Сидорова",  date(1976, 2, 10), Sex.FEMALE, new Student[]{students[1]}),
-            new Parent("Олег",     "Петрович",   "Федоров",   date(1974, 10, 20),Sex.MALE,   new Student[]{students[2]}),
-            new Parent("Андрей",   "Викторович", "Морозов",   date(1977, 4, 5),  Sex.MALE,   new Student[]{students[3]}),
-            new Parent("Павел",    "Сергеевич",  "Волков",    date(1973, 8, 14), Sex.MALE,   new Student[]{students[4]}),
-            new Parent("Юрий",     "Петрович",   "Лебедев",   date(1978, 12, 3), Sex.MALE,   new Student[]{students[5]}),
-            new Parent("Роман",    "Ильич",      "Соколов",   date(1972, 7, 8),  Sex.MALE,   new Student[]{students[6]}),
-            new Parent("Игорь",    "Валерьевич", "Козлов",    date(1975, 5, 25), Sex.MALE,   new Student[]{students[7]}),
-            new Parent("Максим",   "Павлович",   "Попов",     date(1974, 1, 30), Sex.MALE,   new Student[]{students[8]}),
-            new Parent("Сергей",   "Викторович", "Захаров",   date(1976, 11, 11),Sex.MALE,   new Student[]{students[9]})
-        };
-        for (int i = 0; i < students.length; i++) {
-            students[i].setParent(parents[i]);
-        }
+        Discipline sampleDiscipline = data.disciplines.get(0);
+        Institute sampleInstitute = data.institutes.get(0);
+        Professor sampleProfessor = data.professors.get(0);
 
-        // Шаблоны оценок, чтобы получить разные средние и увидеть все три статуса
-        int[][] gradePatterns = {
-            {5, 5, 5, 5, 5, 5, 5, 5, 5, 5}, // средний 5.0 → радостный
-            {5, 5, 4, 5, 5, 5, 5, 4, 5, 5}, // средний 4.8 → радостный
-            {5, 4, 5, 4, 5, 4, 5, 4, 5, 4}, // средний 4.5 → удовлетворённый
-            {4, 4, 4, 4, 4, 4, 4, 4, 4, 4}, // средний 4.0 → удовлетворённый
-            {4, 4, 5, 4, 4, 4, 4, 4, 4, 4}, // средний 4.1 → удовлетворённый
-            {3, 4, 3, 4, 3, 4, 3, 4, 3, 4}, // средний 3.5 → хмурый
-            {3, 3, 4, 3, 3, 3, 3, 4, 3, 3}, // средний 3.2 → хмурый
-            {3, 3, 3, 3, 3, 3, 3, 3, 3, 3}, // средний 3.0 → хмурый
-            {5, 4, 4, 5, 5, 4, 5, 4, 5, 4}, // средний 4.5 → удовлетворённый
-            {5, 5, 5, 4, 5, 5, 5, 4, 5, 5}  // средний 4.8 → радостный
-        };
+        printReport(reportService, data.students, null, null, null, null);
+        printReport(reportService, data.students, 3, null, null, null);
+        printReport(reportService, data.students, null, sampleDiscipline, null, null);
+        printReport(reportService, data.students, null, null, sampleInstitute, null);
+        printReport(reportService, data.students, null, null, null, sampleProfessor);
 
-        System.out.println("=== Выставление оценок ===\n");
-
-        for (Professor prof : professors) {
-            Discipline disc = prof.getDisciplines().get(0);
-            for (int si = 0; si < students.length; si++) {
-                Student student = students[si];
-                int[] values = gradePatterns[si];
-
-                Calendar cal = Calendar.getInstance();
-                cal.set(2024, Calendar.SEPTEMBER, 2);
-
-                for (int week = 0; week < 10; week++) {
-                    Date gradeDate = cal.getTime();
-                    boolean success = prof.gradeStudent(student, disc, values[week], gradeDate);
-                    if (!success) {
-                        System.out.printf("ОШИБКА: %s не смог выставить оценку %s по %s%n",
-                            prof.getFullName(), student.getLastName(), disc.getName());
-                    }
-                    cal.add(Calendar.DAY_OF_MONTH, 7);
-                }
-            }
-        }
-
-        // Вывод итоговых оценок по студентам
-        System.out.println("=== Итоговые оценки студентов ===\n");
-        for (Student student : students) {
-            System.out.printf("Студент: %s%n", student.getFullName());
-            for (Grade grade : student.getGrades()) {
-                System.out.printf("  %-22s | оценка: %d | дата: %s | преп.: %s %s%n",
-                    grade.getDiscipline().getName(),
-                    grade.getValue(),
-                    sdf.format(grade.getDate()),
-                    grade.getProfessor().getFirstName(),
-                    grade.getProfessor().getLastName());
+        Student sixthCourse = findStudentOnCourse(data.students, 6);
+        if (sixthCourse != null) {
+            System.out.println("=== История успеваемости (студент 6-го курса) ===\n");
+            System.out.printf("%s (%s), текущий курс %d%n%n",
+                    sixthCourse.getFullName(),
+                    sixthCourse.getStudyGroup(),
+                    sixthCourse.getCourseYear());
+            for (int year = 1; year <= sixthCourse.getCourseYear(); year++) {
+                System.out.printf(
+                        "  %d-й курс: средний балл %.2f (%d оценок)%n",
+                        year,
+                        sixthCourse.getAverageGradeForCourse(year),
+                        countGradesForCourse(sixthCourse, year));
             }
             System.out.println();
         }
 
-        // Статусы родителей и премии
-        System.out.println("=== Статусы родителей и премии ===\n");
-        for (Parent parent : parents) {
+        for (Parent parent : data.parents) {
             parent.updateStatusAndPremium();
         }
-        for (Student student : students) {
+
+        System.out.println("=== Статусы родителей (первые 5) ===\n");
+        for (int i = 0; i < Math.min(5, data.students.size()); i++) {
+            Student student = data.students.get(i);
             Parent parent = student.getParent();
-            double avg = student.getAverageGrade();
-            System.out.printf("Студент: %-35s средний балл: %.2f | родитель: %s | статус: %-15s | премия: %d руб.%n",
-                student.getFullName(),
-                avg,
-                parent.getFullName(),
-                statusLabel(parent.getStatus()),
-                parent.getPremium());
+            System.out.printf(
+                    "Студент: %-25s %s | ср. %.2f | родитель: %s | %s | премия: %d руб.%n",
+                    student.getFullName(),
+                    student.getStudyGroup(),
+                    student.getAverageGrade(),
+                    parent.getFullName(),
+                    statusLabel(parent.getStatus()),
+                    parent.getPremium());
         }
         System.out.println();
 
-        // Описания через toString
-        System.out.println("=== Описания (toString) ===\n");
-        System.out.println("-- Преподаватели --");
-        for (Professor p : professors) System.out.println(p);
-        System.out.println("\n-- Студенты --");
-        for (Student s : students) System.out.println(s);
-        System.out.println("\n-- Родители --");
-        for (Parent p : parents) System.out.println(p);
-        System.out.println();
-
-        // Демонстрация ограничений
         System.out.println("=== Демонстрация ограничений ===\n");
+        Professor prof0 = data.professors.get(0);
+        Discipline disc0 = prof0.getDisciplines().get(0);
+        Student student0 = data.students.get(0);
 
-        Professor prof0 = professors[0];
-        Discipline disc0 = disciplines[0];
-        Student student0 = students[0];
-
-        // Попытка выставить оценку раньше чем через неделю
-        Date tooSoon = date(2024, Calendar.SEPTEMBER + 1, 2); // та же дата что и первая оценка
+        Date tooSoon = date(2024, Calendar.SEPTEMBER + 1, 2);
         boolean result = prof0.gradeStudent(student0, disc0, 5, tooSoon);
-        System.out.printf("Попытка выставить оценку в ту же дату: %s%n",
-            result ? "УСПЕХ (неожиданно)" : "ОТКЛОНЕНО (ожидаемо — слишком рано)");
+        System.out.printf("Повторная оценка в ту же неделю: %s%n",
+                result ? "УСПЕХ" : "ОТКЛОНЕНО (ожидаемо)");
 
-        // Попытка выставить 11-ю оценку (уже выставлено 10)
         Calendar cal11 = Calendar.getInstance();
         cal11.set(2024, Calendar.SEPTEMBER, 2);
-        cal11.add(Calendar.DAY_OF_MONTH, 77); // 11 недель
+        cal11.add(Calendar.DAY_OF_MONTH, 77);
         result = prof0.gradeStudent(student0, disc0, 5, cal11.getTime());
-        System.out.printf("Попытка выставить 11-ю оценку: %s%n",
-            result ? "УСПЕХ (неожиданно)" : "ОТКЛОНЕНО (ожидаемо — превышен лимит)");
+        System.out.printf("11-я оценка по дисциплине: %s%n",
+                result ? "УСПЕХ" : "ОТКЛОНЕНО (ожидаемо)");
 
-        // Попытка выставить оценку по чужой дисциплине
-        result = prof0.gradeStudent(student0, disciplines[1], 5, cal11.getTime());
-        System.out.printf("Попытка выставить оценку по чужой дисциплине: %s%n",
-            result ? "УСПЕХ (неожиданно)" : "ОТКЛОНЕНО (ожидаемо — чужая дисциплина)");
+        Discipline foreign = data.disciplines.stream()
+                .filter(d -> !prof0.getDisciplines().contains(d))
+                .findFirst()
+                .orElse(disc0);
+        result = prof0.gradeStudent(student0, foreign, 5, cal11.getTime());
+        System.out.printf("Оценка по чужой дисциплине: %s%n",
+                result ? "УСПЕХ" : "ОТКЛОНЕНО (ожидаемо)");
+
+        System.out.printf("%nПример оценки: %s | %s | %s%n",
+                student0.getFullName(),
+                disc0.getName(),
+                sdf.format(student0.getGrades().get(0).getDate()));
+    }
+
+    private static void printGroupDistribution(List<Student> students) {
+        System.out.println("=== Студенты по курсам и группам ===");
+        for (int course = 1; course <= UniversityDataFactory.COURSES; course++) {
+            for (int group = 1; group <= UniversityDataFactory.GROUPS_PER_COURSE; group++) {
+                final int c = course;
+                final int g = group;
+                long count = students.stream()
+                        .filter(s -> s.getStudyGroup().getCourseYear() == c
+                                && s.getStudyGroup().getGroupNumber() == g)
+                        .count();
+                System.out.printf("  %d-й курс, группа %d: %d студентов%n", course, group, count);
+            }
+        }
+        System.out.println();
+    }
+
+    private static void printDisciplineDistribution(List<Discipline> disciplines) {
+        System.out.println("=== Дисциплины по курсам (по 5 на курс, всего 30) ===");
+        for (int course = 1; course <= UniversityDataFactory.COURSES; course++) {
+            final int c = course;
+            long count = disciplines.stream().filter(d -> d.getCourseYear() == c).count();
+            System.out.printf("  %d-й курс: %d дисциплин%n", course, count);
+        }
+        System.out.println();
+    }
+
+    private static void printReport(
+            PerformanceReportService service,
+            List<Student> students,
+            Integer courseYear,
+            Discipline discipline,
+            Institute institute,
+            Professor professor) {
+        List<PerformanceReportService.ReportRow> rows =
+                service.buildReport(students, courseYear, discipline, institute, professor);
+        System.out.println(service.formatReport(rows, courseYear, discipline, institute, professor));
+    }
+
+    private static Student findStudentOnCourse(List<Student> students, int course) {
+        for (Student s : students) {
+            if (s.getCourseYear() == course) {
+                return s;
+            }
+        }
+        return null;
+    }
+
+    private static int countGradesForCourse(Student student, int courseYear) {
+        int count = 0;
+        for (Grade g : student.getGrades()) {
+            if (g.getDiscipline().getCourseYear() == courseYear) {
+                count++;
+            }
+        }
+        return count;
     }
 
     private static String statusLabel(ParentStatus status) {
