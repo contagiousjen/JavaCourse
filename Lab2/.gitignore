@@ -1,6 +1,5 @@
 ### IntelliJ IDEA ###
-.idea/
-*.iml
+# Настройки модуля — в корневом JavaCourse (.idea + *.iml)
 out/
 docs/
 !**/src/main/**/out/

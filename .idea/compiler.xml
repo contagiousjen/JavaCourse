@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="CompilerConfiguration">
+    <bytecodeTargetLevel>
+      <module name="Lab1" target="27" />
+      <module name="Lab2" target="27" />
+      <module name="PredPKO" target="27" />
+    </bytecodeTargetLevel>
+  </component>
+</project>
