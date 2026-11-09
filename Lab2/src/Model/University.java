@@ -116,6 +116,10 @@ public class University {
         return data.professors;
     }
 
+    public List<Discipline> getDisciplines() {
+        return data.disciplines;
+    }
+
     public List<Student> studentsOfEachTier() {
         List<Student> sample = new ArrayList<>();
         for (PerformanceCategory category : PerformanceCategory.values()) {

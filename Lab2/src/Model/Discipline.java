@@ -17,4 +17,11 @@ public class Discipline {
     public int getCredits() { return credits; }
     public int getCourseYear() { return courseYear; }
     public Professor getProfessor() { return professor; }
+
+    @Override
+    public String toString() {
+        return String.format(
+                "Предмет: %s, %d-й курс, %d з.е., преподаватель: %s",
+                name, courseYear, credits, professor.getFullName());
+    }
 }

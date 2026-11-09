@@ -43,7 +43,7 @@ public class Controller {
         university.updateParentStatuses();
         List<Student> sample = university.studentsOfEachTier();
         view.showParentStatuses(sample);
-        view.showDescriptions(university.getProfessors(), sample);
+        view.showDescriptions(university.getDisciplines(), university.getProfessors(), sample);
 
         view.showConstraintsHeader();
         University.GradeCheck tooSoon = university.sampleStudentTooSoon();

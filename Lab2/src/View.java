@@ -119,7 +119,7 @@ public class View {
                     "Студент: %-25s %s | ср. %.2f | родитель: %s | %s | премия: %d руб.%n",
                     student.getFullName(),
                     student.getStudyGroup(),
-                    student.getAverageGrade(),
+                    student.getSessionAverage(),
                     student.getParent().getFullName(),
                     statusLabel(student.getParent().getStatus()),
                     student.getParent().getPremium());
@@ -127,9 +127,17 @@ public class View {
         System.out.println();
     }
 
-    public void showDescriptions(List<Professor> professors, List<Student> students) {
+    public void showDescriptions(
+            List<Discipline> disciplines,
+            List<Professor> professors,
+            List<Student> students) {
         System.out.println("=== Описания (toString) ===\n");
-        System.out.println("-- Преподаватели --");
+        System.out.println("-- Предметы --");
+        int disciplineSample = Math.min(disciplines.size(), 3);
+        for (int i = 0; i < disciplineSample; i++) {
+            System.out.println(disciplines.get(i));
+        }
+        System.out.println("\n-- Преподаватели --");
         for (Professor professor : professors) {
             System.out.println(professor);
         }

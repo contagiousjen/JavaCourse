@@ -36,23 +36,35 @@ public class Parent extends Person
             premium = 0;
             return;
         }
-        double avg = 0;
-        for (Student s : students) avg += s.getAverageGrade();
-        avg /= students.length;
+        double avg = childrenSessionAverage();
 
-        if (avg < 4.0) {
-            status = ParentStatus.Angry;
-            premium = 0;
+        if (avg >= 4.6 && avg <= 5.0) {
+            status = ParentStatus.Happy;
+            premium = 10000;
         } else if (avg >= 4.0 && avg <= 4.5) {
             status = ParentStatus.Pleased;
             premium = 5000;
-        } else if (avg > 4.5 && avg <= 5.0) {
+        } else if (avg >= 3.0 && avg <= 3.9) {
+            status = ParentStatus.Angry;
+            premium = 0;
+        } else if (avg > 4.5 && avg < 4.6) {
             status = ParentStatus.Happy;
             premium = 10000;
         } else {
-            status = null;
+            status = ParentStatus.Angry;
             premium = 0;
         }
+    }
+
+    private double childrenSessionAverage() {
+        if (students == null || students.length == 0) {
+            return 0.0;
+        }
+        double sum = 0;
+        for (Student s : students) {
+            sum += s.getSessionAverage();
+        }
+        return sum / students.length;
     }
 
     @Override
@@ -65,7 +77,8 @@ public class Parent extends Person
             }
         }
         String children = names.isEmpty() ? "—" : names.toString();
-        return String.format("Родитель: %s, дети: %s, выплачено премиальных: %d руб.",
-                super.toString(), children, premium);
+        return String.format(
+                "Родитель: %s, дети: %s, средний балл за сессию: %.2f, выплачено премиальных: %d руб.",
+                super.toString(), children, childrenSessionAverage(), premium);
     }
 }

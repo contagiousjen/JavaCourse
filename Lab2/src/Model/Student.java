@@ -79,6 +79,10 @@ public class Student extends Person {
         return count == 0 ? 0.0 : sum / count;
     }
 
+    public double getSessionAverage() {
+        return getAverageGradeForCourse(courseYear);
+    }
+
     public int getPremium() {
         return parent == null ? 0 : parent.getPremium();
     }
@@ -86,7 +90,7 @@ public class Student extends Person {
     @Override
     public String toString() {
         return String.format(
-                "Студент: %s, %s, средний балл: %.2f, премия: %d руб.",
-                super.toString(), studyGroup, getAverageGrade(), getPremium());
+                "Студент: %s, %s, средний балл за сессию: %.2f, премия: %d руб.",
+                super.toString(), studyGroup, getSessionAverage(), getPremium());
     }
 }
