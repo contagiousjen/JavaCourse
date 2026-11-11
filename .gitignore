@@ -1,6 +1,12 @@
-# IntelliJ IDEA
-.idea/
-*.iml
+# IntelliJ IDEA (keep module config; ignore local workspace)
+.idea/*
+!.idea/misc.xml
+!.idea/modules.xml
+!.idea/compiler.xml
+!.idea/encodings.xml
+!.idea/vcs.xml
+!.idea/*.xml
+!**/*.iml
 
 # Compiled class file
 *.class
